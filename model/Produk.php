@@ -20,11 +20,49 @@
  
         // read all products
         function read(){
+
+            $query = "SELECT id, nama_produk, harga, tipe_produk, stok
+                      FROM ".$this->table_name."
+                      ORDER BY id ASC";
+
+           //prepare query statement
+           $stmt = $this->conn->prepare($query);
+ 
+           // execute query
+           $stmt->execute();
+           return $stmt;
+
             
         }
  
         // read single products by id
         function readOne(){
+
+            $query = "SELECT
+            id, nama_produk, harga, tipe_produk, stok
+            FROM
+            " . $this->table_name . "
+            WHERE
+            id = ?";
+
+            
+            //prepare query statement
+            $stmt = $this->conn->prepare($query);
+ 
+            // bind id of product to be updated
+            $stmt->bindParam(1, $this->id);
+ 
+            // execute query
+            $stmt->execute();
+ 
+            // get retrieved row
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+ 
+            //set values to object properties
+            $this->nama_produk = $row['nama_produk'];
+            $this->harga=$row['harga'];
+            $this->tipe_produk=$row['tipe_produk'];
+            $this->stok=$row['stok'];
             
         }
  

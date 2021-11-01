@@ -45,7 +45,7 @@
             WHERE
             id = ?";
 
-            
+
             //prepare query statement
             $stmt = $this->conn->prepare($query);
  
@@ -69,17 +69,89 @@
         //create products
         function create(){
          
-         }
+            //query to insert record
+            $query = "INSERT INTO
+            " . $this->table_name . "
+            SET
+                nama_produk=:nama_produk,
+                harga=:harga,
+                tipe_produk=:tipe_produk,
+                stok=:stok";
+ 
+            // prepare query
+            $stmt = $this->conn->prepare($query);
+ 
+            // bind values 
+            $stmt->bindParam(":nama_produk", $this->nama_produk);
+            $stmt->bindParam(":harga", $this->harga);
+            $stmt->bindParam(":tipe_produk", $this->tipe_produk);
+            $stmt->bindParam(":stok", $this->stok);
+ 
+            //execute query 
+            if($stmt->execute())
+            {
+            return true;
+            }
+            return false;
+
+
+        }
  
         //update the product
         function update(){
             //updatequery
-             
+
+            $query= "UPDATE
+            " . $this->table_name . "
+            SET
+            nama_produk = :nama_produk,
+            harga = :harga,
+            tipe_produk = :tipe_produk,
+            stok = :stok
+            WHERE
+            id = :id";
+ 
+            //preparequerystatement
+            $stmt = $this->conn->prepare($query);
+ 
+            //bindnewvalues
+            $stmt->bindParam(':nama_produk', $this->nama_produk);
+            $stmt->bindParam(':harga', $this->harga);
+            $stmt->bindParam(':tipe_produk', $this->tipe_produk);
+            $stmt->bindParam(':stok', $this->stok);
+            $stmt->bindParam(':id', $this->id);
+ 
+            //executethequery
+            if($stmt->execute()){
+            return true;
+            }
+ 
+            return false;
+
         }
  
         // detela the products
         function delete(){
-            //deletequery
+
+        //deletequery
+             $query = "DELETE FROM "
+             . $this->table_name . 
+             " WHERE id = ?";
+         
+             //prepare query
+             $stmt = $this->conn->prepare($query);
+         
+             //sanitize//$this->id=htmlspecialchars(strip_tags($this->id));
+         
+             //bindidofrecordtodelete
+             $stmt->bindParam(1,$this->id);
+         
+             //executequery
+             if($stmt->execute()){
+                 return true;
+             }
+             return false;
+             }
         
         }
 }

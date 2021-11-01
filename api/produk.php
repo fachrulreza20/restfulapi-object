@@ -107,18 +107,138 @@
  
         case 'POST' :
         //code if the client request method is POST
+
+
+                if(
+                    isset($_POST['nama_produk'])&&
+                    isset($_POST['harga'])&&
+                    isset($_POST['tipe_produk'])&&
+                    isset($_POST['stok'])
+                )
+                {
+                //menerima kiriman data melalui method request POST
+                    $produk->nama_produk = $_POST['nama_produk'];
+                    $produk->harga = $_POST['harga'];
+                    $produk->tipe_produk = $_POST['tipe_produk'];
+                    $produk->stok = $_POST['stok'];
+                 
+                    //create the product 
+                    if($produk->create()){
+                 
+                        // set response code - 201 created
+                        http_response_code(201);
+                        //echo json_encode(array("kode_status"=>"201"));
+                 
+                        //telltheusere
+                        echo json_encode(array("message" => "Product was created."));
+                    }
+                    //ifunabletocreatetheproduct,telltheuser
+                    else{
+                        //setresponsecode-503serviceunavailable
+                        http_response_code(503);
+                 
+                        //telltheuser
+                        //echojson_encode(array("message"=>"Unabletocreateproduct."));
+                 
+                        $result=array(
+                            "status_kode" => 503,
+                            "status_massage" => "Unabletocreateproduct"
+                        );
+                        echo json_encode($result);
+                    }
+                }
+                //telltheuserdataisincomplete
+                else{
+                    //setresponsecode-400badrequest
+                    http_response_code(400);
+                 
+                    $result=array(
+                        "status_kode" => 400,
+                        "status_massage" => "Unable to create product"
+                    );
+                    echo json_encode($result);
+                }
          
         break;
  
         case 'PUT' :
         //code if the client request method is PUT
-            //codeiftheclientrequestmethodisPUT
+        //codeiftheclientrequestmethodisPUT
+
+
+           $data = json_decode(file_get_contents("php://input"));
+           $id = $data->id;
+           //echo'parameterpost'.$_POST['id'];
+           //echo'parameterpost'.$_PUT['id'];
+           if($id==""||$id==null){
+               echo json_encode(array("message" => "Parameter Id tidak boleh kosong"));
+           }else{
+               $produk->id = $data->id;
+               $produk->nama_produk = $data->nama_produk;
+               $produk->harga = $data->harga;
+               $produk->tipe_produk = $data->tipe_produk;
+               $produk->stok = $data->stok;
+ 
+           if($produk->update()){
+               //setresponsecode-200ok
+               http_response_code(200);
+
+               //telltheuser
+               echo json_encode(array("message" => "Product was updated."));
+           }
+           //ifunabletoupdatetheproduct,telltheuser
+           else{
+               //setresponsecode-503serviceunavailable
+               http_response_code(503);
+                
+               $result=array(
+                   "status_kode" => 503,
+                   "status_massage" => "Bad Request,Unable to update product"
+               );
+               echo json_encode($result);
+ 
+               //telltheuserecho
+               echo json_encode(array("message"=>"Unable to update product."));
+           }
+           }
+
              
         break;
  
         case 'DELETE' :
         //code if the client request method is DELETE
-            //codeiftheclientrequestmethodisDELETE
+
+           if(!isset($_GET['id'])){
+               echo json_encode(array("message" => "Parameter Id id tidak ada"));
+               }
+               elseif($_GET['id'] == NULL){
+                   echo json_encode(array("message" => "Parameter Id id tidak boleh kosong"));
+               }else{
+                   //setproductidtobedeleted
+                   $produk->id=$_GET['id'];
+                
+                   //deletetheproduct
+                   if($produk->delete()){
+     
+                       //set response code-200ok
+                       http_response_code(200);
+                       //telltheuser
+                       echo json_encode(array("message" => "Product was deleted."));
+                   }
+                   //ifunabletodeletetheproduct
+                   else{
+                       //setresponsecode-503serviceunavailable
+                       http_response_code(503);
+     
+                       $result=array(
+                           "status_kode" => 503,
+                           "status_massage" => "Bad Request,Unable to delete product");
+                       echo json_encode($result);
+     
+                       //telltheuser
+                       echo json_encode(array("message" => "Unable to delete product."));
+                   }
+               }
         
         break;
  

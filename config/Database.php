@@ -1,11 +1,12 @@
 <?php
     class Database{
-    //pembuatan variabel
+
     private $host = "localhost"; 
     private $db_name = "restfullapi-object";
     private $username ="root"; 
     private $password ="";
     public $conn;
+
     //get the data base connection 
     public function getConnection(){
         $this->conn = null;
